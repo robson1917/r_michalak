@@ -1,0 +1,131 @@
+
+<html>
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+
+    <script>
+
+            function paint(value)
+            {
+            var img = new Image();            
+            if ( typeof paint.lastValue == 'undefined' )
+            {
+              paint.lastValue = 0;
+            }
+              var canvas = document.getElementById('tarcza');
+              var context = canvas.getContext('2d');                
+              img.src = 'tarcza.png';
+
+              context.translate(canvas.width / 2, canvas.height / 2);               
+              context.rotate(((value-paint.lastValue)*-1)* Math.PI / 180);
+              paint.lastValue = value;
+
+              context.translate(-canvas.width / 2, -canvas.height / 2);
+
+              img.onload = function()
+              {
+                 context.clearRect(0, 0, canvas.width, canvas.height);
+                 context.drawImage(img,Math.abs((img.width - canvas.width)/2),Math.abs((img.width - canvas.width)/2));
+              };
+       }
+
+
+        function handleUpdate(value)
+        {
+            try {
+                var stopnie = Math.round(value);
+                var kierunek = "";
+
+                if(stopnie <= 10 || stopnie >= 350){
+                    kierunek = "N"
+
+                }
+                if(stopnie > 10 && stopnie < 80){
+                    kierunek = "NE"
+
+                }
+                if(stopnie >= 80 && stopnie <= 100){
+                    kierunek = "E"
+
+                }
+                if(stopnie > 100 && stopnie < 170){
+                    kierunek = "SE"
+
+                }
+                if(stopnie >= 170 && stopnie <= 190){
+                    kierunek = "S"
+
+                }
+                if(stopnie > 190 && stopnie < 260){
+                    kierunek = "SW"
+
+                }
+                if(stopnie >= 260 && stopnie <= 280){
+
+                    kierunek = "W"
+
+                }
+                if(stopnie > 280 && stopnie < 350){
+
+                    kierunek = "NW"
+
+                }
+                document.getElementById("stopnie").innerHTML =  kierunek + ' '+ stopnie+'&#176;';
+
+
+                paint(stopnie);
+
+
+            }
+            catch(e) {
+                ComarchCompass.debug("[JS] handleUpdate error "+e);
+            }
+        }
+        window.onload = function() {
+            ComarchCompass.update.connect(handleUpdate);
+
+             var canvas = document.getElementById('tarcza');            
+
+
+            var pozycjaX = 0;
+            var pozycjaY = 0;
+
+            document.getElementById("A").style.left= ((canvas.width/2)+pozycjaX)+"px";
+            document.getElementById("A").style.top= (pozycjaY)+"px";
+
+            document.getElementById("B").style.left= (canvas.width+pozycjaX-35)+"px";
+            document.getElementById("B").style.top= ((canvas.height/2)+pozycjaY-10)+"px";
+
+            document.getElementById("C").style.left= ((canvas.width/2)+pozycjaX-10)+"px";
+            document.getElementById("C").style.top= (canvas.height+pozycjaY-30)+"px";
+
+            document.getElementById("D").style.left= (pozycjaX+10)+"px";
+            document.getElementById("D").style.top= ((canvas.height/2)+pozycjaY-10)+"px";
+
+
+        }
+
+
+
+
+
+    </script>
+</head>
+<body>
+<div id="A">0&#176;</div>
+<div id="B">90&#176;</div>
+<div id="C">180&#176;</div>
+<div id="D">270&#176;</div>
+            <div id="kompas">
+                <canvas id="tarcza" width="450" height="450">
+                 <script>
+                    paint(0);
+                 </script>
+                </canvas>
+            </div>
+<div id="stopnie">N 0&#176; </div>
+
+
+
+</body>
+</html>
